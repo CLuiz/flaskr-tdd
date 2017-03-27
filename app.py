@@ -16,6 +16,14 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 
+@app.route('/')
+def show_entries():
+    """Searches the db for entries, then displays them"""
+    db = get_db()
+    cur = db.execute('SELECT * FROM entries ORDER BY id DESC')
+    entries = cur.fetchall()
+    return render_template('index.html', entries=entries)
+
 # connect to db
 def connect_db():
     rv = sqlite3.connect(app.config['DATABASE'])
