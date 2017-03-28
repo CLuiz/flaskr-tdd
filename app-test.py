@@ -2,6 +2,7 @@ import unittest
 import os
 import tempfile
 import app
+import json
 
 
 class BasicTestCase(unittest.TestCase):
@@ -46,7 +47,7 @@ class FlaskrTestCase(unittest.TestCase):
     def test_empty_db(self):
         """Ensure databaase is blank"""
         rv = self.app.get('/')
-        assert b'No entries here so far' in rv.data
+        assert b'No entries yet. Add some!' in rv.data
 
     def test_login_logout(self):
         """Test login and logout using helper functions"""
@@ -78,10 +79,15 @@ class FlaskrTestCase(unittest.TestCase):
             title='<Hello>',
             text='<strong>HTML</strong> allowed here'
         ), follow_redirects=True)
-        assert b'No entries here so far' not in rv.data
+        assert b'No entries yet. Add some!' not in rv.data
         assert b'&lt;Hello&gt;' in rv.data
-        assert b'<strong>HTML</strong> allower here' in rv.data
+        assert b'<strong>HTML</strong> allowed here' in rv.data
 
+    def test_delete_messages(self):
+        """Ensure the messagesare being deleted"""
+        rv = self.app.get('/delete/1')
+        data = json.loads((rv.data).decode('utf-8'))
+        self.assertEqual(data['status'], 1)
 
 if __name__ == '__main__':
     unittest.main()

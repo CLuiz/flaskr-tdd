@@ -49,6 +49,36 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/add', methods=['POST'])
+def add_entry():
+    """ADD new post to database"""
+    if not session.get('logged_in'):
+        abort(401)
+    db = get_db()
+    db.execute(
+        'INSERT INTO entries (title, text) values (?, ?)',
+        [request.form['title'], request.form['text']]
+    )
+    db.commit()
+    flash('New entry was successfully posted')
+    return redirect(url_for('index'))
+
+
+@app.route('/delete/<post_id>', methods=['GET'])
+def delete_entry(post_id):
+    """Delete post from db"""
+    result = {'status': 0, 'message': 'Error'}
+    try:
+        db = get_db()
+        db.execute('DELETE FROM entries WHERE id=' + post_id)
+        db.commit()
+        result = {'status': 1, 'message': "Post Deleted"}
+    except Exception as e:
+        result = {'status': 0, 'message': repr(e)}
+
+    return jsonify(result)
+
+
 # connect to db
 def connect_db():
     rv = sqlite3.connect(app.config['DATABASE'])
