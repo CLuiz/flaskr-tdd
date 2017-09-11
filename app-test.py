@@ -9,7 +9,6 @@ TEST_DB = 'test.db'
 
 
 class BasicTestCase(unittest.TestCase):
-
     def test_index(self):
         """Initial test. Ensure flask was correctly set up."""
         tester = app.test_client(self)
@@ -23,7 +22,6 @@ class BasicTestCase(unittest.TestCase):
 
 
 class FlaskrTestCase(unittest.TestCase):
-
     def setUp(self):
         """Set up blank temp db before each test."""
         # self.db_fd, app.app.config['DATABASE'] = tempfile.mkstemp()
